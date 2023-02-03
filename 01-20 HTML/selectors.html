@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selectors</title>
+
+    <style>
+        #content li {
+            color: red;
+
+            transition: 1s;
+        }
+
+        #mainlist > li {
+            color: blue;
+            transition: 1s;
+        }
+
+        li:hover {
+            background-color: aquamarine;
+            transform: translateX(30px);
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="content">
+        <ul id="mainlist">
+            <li>Hi</li>
+            <li>ho</li>
+            <li>hi</li>
+            <li id="ho">ho</li>
+            <ol>
+                <li>Na</li>
+                <li>no</li>
+                <li>na</li>
+            </ol>
+        </ul>
+    </div>
+
+
+</body>
+</html>

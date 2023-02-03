@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Table</title>
+    <style>
+        table {
+            border: 3px solid black;
+            border-collapse: collapse;
+        }
+        td, th {
+            border: 1px solid black;
+            padding: 5px;
+            background-color: cornsilk;
+        }
+        /* Class names */
+        .dark {
+            color: red;
+        }
+
+        .big {
+            font-size: 30px;
+        }
+
+        /* ID */
+        #greeting {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <table>
+        <thead>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Dress</th>
+        </thead>
+        <tbody>
+            <tr class="dark">
+                <td>Max</td>
+                <td>29</td>
+                <td>Tutu</td>
+            </tr>
+            <tr>
+                <td>Angelina</td>
+                <td>31</td>
+                <td>Skirt</td>
+            </tr>
+            <tr>
+                <td>Brittany</td>
+                <td>17</td>
+                <td>No</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p id="greeting" class="dark big">Hello</p>
+</body>
+</html>

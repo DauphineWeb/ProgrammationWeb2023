@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox</title>
+
+    <style>
+        #container {
+            background-color: green;
+            display: grid;
+            padding: 20px;
+            grid-column-gap: 20px;
+            grid-row-gap: 20px;
+            grid-template-columns: 200px 200px auto;
+        }
+
+        #container > div {
+            margin: 5px;
+            padding: 5px;
+            background-color: blueviolet;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="griditem">A</div>
+        <div class="griditem">B</div>
+        <div class="griditem">C</div>
+        <div class="griditem">D</div>
+        <div class="griditem">E</div>
+        <div class="griditem">F</div>
+        <div class="griditem">G</div>
+        <div class="griditem">H</div>
+        <div class="griditem">I</div>
+        <div class="griditem">J</div>
+    </div>
+</body>
+</html>
