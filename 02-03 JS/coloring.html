@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert</title>
+
+    <style>
+        h1 {
+            color: gray;
+            transition: 1s;
+        }
+    </style>
+
+    <script>
+        let title;
+        // anonymous function
+        document.addEventListener('DOMContentLoaded', function() {
+            title = document.querySelector('.title');
+
+            document.querySelector('#bRed').addEventListener('click', () => changeColor('red'));
+            document.querySelector('#bGreen').addEventListener('click', () => changeColor('green'));
+            document.querySelector('#bBlue').addEventListener('click', () => changeColor('blue'));
+        })
+
+        function changeColor(color) {
+            title.style.color = color;
+        }
+    </script>
+
+</head>
+<body>
+    
+    <h1 class="title">Welcome</h1>
+    <button id="bRed">Make me red</button>
+    <button id="bGreen">Make me green</button>
+    <button id="bBlue">Make me blue</button>
+
+
+
+    
+
+
+</body>
+</html>
