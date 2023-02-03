@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object</title>
+
+    <script>
+
+        function updateValue(value) {
+            document.getElementById('info').innerText = JSON.stringify(value);
+        }
+        
+        function fetchInfo() {
+            document.getElementById('info').innerText = 'Fetching...'
+            fetch('https://random-data-api.com/api/v2/users')
+                .then(response => response.json())
+                .then(value => updateValue(value));
+
+            
+        }
+    </script>
+
+</head>
+<body>
+
+    <button onclick="fetchInfo()">Fetch data</button>
+    <p id="info"></p>
+    
+</body>
+</html>

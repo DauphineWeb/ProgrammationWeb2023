@@ -17,17 +17,43 @@
     </style>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // document.addEventListener('DOMContentLoaded', function() {
             
-        });
+        // });
+
+        function addItem() {
+            let list = document.querySelector('#myList');
+            let item = document.createElement('li');
+            let textField = document.querySelector('#textInput');
+
+            let value = textField.value;
+            
+            // use 3 equal signs for strict equality
+            if(value === '') {
+                return;
+            }
+
+            item.innerText = textField.value;
+            textField.value = '';
+            
+            list.appendChild(item);
+        }
+
+        function removeItem() {
+            let list = document.querySelector('#myList');
+            list.removeChild(list.firstElementChild);
+        }
     </script>
 </head>
 <body>
+
     <input type="text" name="value" id="textInput">
-    <button id="add">Add element</button>
-    <button id="remove">Remove first element</button>
+    <button onclick="addItem()" id="add">Add element</button>
+    <button onclick="removeItem()" id="remove">Remove first element</button>
 
     <ul id="myList">
+        <li>Ho</li>
+        <li>Hu</li>
     </ul>
 
 </body>
