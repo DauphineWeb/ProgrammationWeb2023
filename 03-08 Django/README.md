@@ -61,4 +61,4 @@ and `:8000` is the port the server listens to.
 
 Opening the URL should show you a default page Django has prepared.
 
-[!Django homepage](res/django_screenshot.png)
+![Django homepage](res/django_screenshot.png)
