@@ -115,14 +115,14 @@ purpose.
 Within your project, create a new app by
 
 1.  running `python manage.py startapp APP_NAME`, and
-
 2.  adding `APP_NAME` to the list `INSTALLED_APPS` inside `settings.py`.
+3.  Add the specific route to your app in `PROJECT_NAME/urls.py`.
 
-3.  <details>
-    <summary>
-    Add the specific route to your app in `PROJECT_NAME/urls.py` (this
-    will come up in the next section)
-    </summary>
+<details>
+<summary>
+(the third step will be delved into in the next section, but you can
+view the code here)
+</summary>
 
 ``` python
 from django.contrib import admin
