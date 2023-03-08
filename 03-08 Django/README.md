@@ -149,10 +149,10 @@ Running the `startapp` subcommand creates a new directory.
 
 ## 3.1 Routing to your app
 
-In order to tell Django, what the user should get depending on the URL
-they have typed in, we need to create functions in Python that take in a
-**request** object as a parameter and return some type of **response**
-object for Django to send back to the user.
+In order to tell Django what the user should receive depending on the
+URL they have typed in, we need to create functions in Python that take
+in a **request** object as a parameter and return some type of
+**response** object for Django to send back to the user.
 
 1.  Open `MY_APP/views.py`.
 2.  Add a function creating a response.
@@ -187,35 +187,27 @@ Code
 from django.urls import path
 from . import views
 
+# a namespace for our app, this will become important in the Templates section
 app_name = 'MY_APP'
+
+# we call the path function to let Django know what of our Python function should be
+# called when a certain URL has been entered.
+# The name parameter is optional, but lets us later more conveniently link between pages.
 urlpatterns = [
   path('', views.index, name='index'),
-  path('brian/', views.index, name='brian')
+  path('brian/', views.greet_brian, name='brian')
 ]
 ```
 
-<details>
-<summary>
-Description
-</summary>
-
-The `path` function lets us tell Django, which URL paths are linked to
-which Python functions. Upon calling the function, we pass in three
-parameters:
-
-1.  the first parameter is the route, or the specific URL, that we want
-    to catch,
-2.  the second parameter points to the function Django should call once
-    the user types in the specific URL,
-3.  finally, the third parameter specifies a name that can be accessed
-    in templates to link between pages.
-
-Notice that `app_name` is also specified
-</details>
 </details>
 
 5.  Don’t forget to add the route to that app to your project. Inside
     `PROJECT_NAME/urls.py`, add the following:
+
+<details>
+<summary>
+Code
+</summary>
 
 ``` python
 from django.contrib import admin
@@ -226,6 +218,8 @@ urlpatterns = [
   path('admin/', admin.site.urls)
 ]
 ```
+
+</details>
 
 If we now start the server using `python manage.py runserver`, opening
 up `127.0.0.1:8000/myapp` returns the `HttpResponse` from step 2.
