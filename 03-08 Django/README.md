@@ -4,13 +4,8 @@
   - [1.2 Structure](#structure)
 - [2 Applications](#applications)
 - [3 Routes](#routes)
-  - [3.1 Creating a view](#creating-a-view)
-- [4 Templates](#templates)
-- [5 Multiple views](#multiple-views)
-- [6 Create your views here.](#create-your-views-here.)
-- [7 Build more sophisticated page](#build-more-sophisticated-page)
-- [8 Create your views here.](#create-your-views-here.-1)
-- [9 Session](#session)
+  - [3.1 Routing to your app](#routing-to-your-app)
+  - [3.2 Parameterized routes](#parameterized-routes)
 
 # Django
 
@@ -152,6 +147,8 @@ Running the `startapp` subcommand creates a new directory.
 
 # 3 Routes
 
+## 3.1 Routing to your app
+
 In order to tell Django, what the user should get depending on the URL
 they have typed in, we need to create functions in Python that take in a
 **request** object as a parameter and return some type of **response**
@@ -160,16 +157,31 @@ object for Django to send back to the user.
 1.  Open `MY_APP/views.py`.
 2.  Add a function creating a response.
 
+<details>
+<summary>
+Code
+</summary>
+
 ``` python
 from django.http import HttpResponse
 
 def index(request):
   return HttpResponse('Hello, World')
+  
+def greet_brian(request):
+  return HttpResponse('Hello, Brian')
 ```
+
+</details>
 
 3.  Create a file `MY_APP/urls.py`. This lets us **route** URLs to the
     corresponding functions in Python that we have created.
 4.  Add the following to the newly created `MY_APP/urls.py` file.
+
+<details>
+<summary>
+Code
+</summary>
 
 ``` python
 from django.urls import path
@@ -177,9 +189,30 @@ from . import views
 
 app_name = 'MY_APP'
 urlpatterns = [
-  path('', views.index, name='index')
+  path('', views.index, name='index'),
+  path('brian/', views.index, name='brian')
 ]
 ```
+
+<details>
+<summary>
+Description
+</summary>
+
+The `path` function lets us tell Django, which URL paths are linked to
+which Python functions. Upon calling the function, we pass in three
+parameters:
+
+1.  the first parameter is the route, or the specific URL, that we want
+    to catch,
+2.  the second parameter points to the function Django should call once
+    the user types in the specific URL,
+3.  finally, the third parameter specifies a name that can be accessed
+    in templates to link between pages.
+
+Notice that `app_name` is also specified
+</details>
+</details>
 
 5.  Don’t forget to add the route to that app to your project. Inside
     `PROJECT_NAME/urls.py`, add the following:
@@ -189,7 +222,12 @@ from django.contrib import admin
 from django.urls import path, include # don't forget to import include
 
 urlpatterns = [
-  path('myapp/', include('APP_NAME.urls'))
-  path('admin/', admin.site.urls),
+  path('myapp/', include('APP_NAME.urls')),
+  path('admin/', admin.site.urls)
 ]
 ```
+
+If we now start the server using `python manage.py runserver`, opening
+up `127.0.0.1:8000/myapp` returns the `HttpResponse` from step 2.
+
+## 3.2 Parameterized routes
