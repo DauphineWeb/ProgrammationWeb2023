@@ -1,3 +1,4 @@
+- [Django](#django)
 - [1 Setup](#setup)
   - [1.1 Creating a project](#creating-a-project)
   - [1.2 Structure](#structure)
@@ -11,7 +12,7 @@
 - [8 Create your views here.](#create-your-views-here.-1)
 - [9 Session](#session)
 
-\#{-} Django
+# Django
 
 In the first lecture, we have discussed from a high-level how the web
 works. To recapitulate, once a URL is entered into the browser, the
