@@ -16,8 +16,8 @@
 
 In the first lecture, we have discussed from a high-level how the web
 works. To recapitulate, once a URL is entered into the browser, the
-browser looks for the corresponding IP address using via DNS, connects
-to a server, sends the user’s **request** using the HTTP (hyper-text
+browser looks for the corresponding IP address via DNS lookup, connects
+to a server, sends the user’s **request** using HTTP (hyper-text
 transfer protocol) and in turn waits for the server to process and
 **respond** to that request.
 
@@ -27,9 +27,9 @@ understands, namely HTML, CSS, and JavaScript. These are considered
 
 Now, we will take a look at [Django](https://www.djangoproject.com), a
 Python web framework that lets us build a **back-end** server. Django
-lets us receive HTTP requests and respond with anything we wish, be it
-static HTML and CSS files or dynamically generated HTML files or JSON
-objects.
+allows us to receive HTTP requests and respond with anything we wish, be
+it static files (html, css, images, etc.), dynamically generated HTML
+files, or JSON objects, to name a few.
 
 # 1 Setup
 
@@ -75,11 +75,14 @@ the port the server listens to.
 
 Opening the URL should show you a default page Django has prepared.
 
-[!Django homepage](res/django_screenshot.png)
+<figure>
+<img src="res/django_screenshot.png" alt="Django homepage" />
+<figcaption aria-hidden="true">Django homepage</figcaption>
+</figure>
 
 ## 1.2 Structure
 
-Open the project in your editor of choice. It should roughly contain the
+Open the project in your editor of choice. It should contain the
 following files and folders.
 
     .
@@ -126,7 +129,7 @@ from django.contrib import admin
 from django.urls import path, include # don't forget to import include
 
 urlpatterns = [
-  path('myapp/', include('APP_NAME.urls'))
+  path('myapp/', include('APP_NAME.urls')),
   path('admin/', admin.site.urls),
 ]
 ```
