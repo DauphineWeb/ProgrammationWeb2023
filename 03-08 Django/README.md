@@ -16,6 +16,10 @@
   - [4.7 Blocks (or template
     inheritance)](#blocks-or-template-inheritance)
   - [4.8 csrf tokens](#csrf-tokens)
+- [5 Forms](#forms)
+  - [5.1 Handling POST requests](#handling-post-requests)
+  - [5.2 Using Django forms](#using-django-forms)
+- [6 Sessions](#sessions)
 
 # Django
 
@@ -449,12 +453,12 @@ Resulting html
 </html>
 ```
 
-(there’s roughly a 3/4 chance that this your output is different)
+(there’s roughly a 3/4 chance that your output is different)
 </details>
 
 ## 4.4 [Lorem ipsum](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#lorem)
 
-Create some generic lore-ipsum text. No data is necessary from the
+Create some generic lorem-ipsum text. No data is necessary from the
 `render()` function.
 
 ``` html
@@ -514,7 +518,7 @@ Then, we can dynamically link to that file in our template.
 <html>
   <head>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'hello/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'myapp/styles.css' %}">
   </head>
   <body></body>
 </html>
@@ -530,7 +534,7 @@ Resulting html
 <html>
   <head>
     
-    <link rel="stylesheet" href="/static/hello/styles.css">
+    <link rel="stylesheet" href="/static/myapp/styles.css">
   </head>
   <body></body>
 </html>
@@ -579,8 +583,8 @@ Resulting html
 <html>
   <body>
     <h1>Visit one of our many sites</h1>
-    <a href="/hello/">The index page</a>
-    <a href="/hello/data">The data page</a>
+    <a href="/myapp/">The index page</a>
+    <a href="/myapp/data">The data page</a>
   <body/>
 </html>
 ```
@@ -649,7 +653,7 @@ Resulting html
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     
-    <link rel="stylesheet" href="/static/hello/styles.css">
+    <link rel="stylesheet" href="/static/myapp/styles.css">
   </head>
   <body>
     
@@ -676,7 +680,7 @@ form will lead to an error.
 <html>
   <body>
     <h1>Enter your credit card number</h1>
-    <form action="{% url 'hello:index' %}" method="post">
+    <form action="{% url 'myapp:index' %}" method="post">
       <!-- add csrf protection -->
       {% csrf_token %}
       <!-- user input below -->
@@ -710,3 +714,184 @@ Resulting html
 
 The value of the csrf token will change with every refresh.
 </details>
+
+# 5 [Forms](https://docs.djangoproject.com/en/4.1/topics/forms/)
+
+## 5.1 Handling POST requests
+
+<details>
+<summary>
+Assume the form from before.
+</summary>
+
+``` html
+<html>
+  <body>
+    <h1>Enter your credit card number</h1>
+    <form action="{% url 'myapp:index' %}" method="post">
+      <!-- add csrf protection -->
+      {% csrf_token %}
+      <!-- user input below -->
+      <input type="text" name="name" />
+      <input type="submit" />
+    </form>
+  <body/>
+</html>
+```
+
+</details>
+
+Once the user has entered their name into the textfield and hit submit,
+we can check for the values in the `request` parameter.
+
+- `request.method` tells us the method used (i.e., `GET`, `POST`, `PUT`,
+  etc.)
+- `request.POST.get('FIELD_IN_FORM')` returns the value of a submitted
+  field, or `None` if it is missing. This is analogous for `GET`
+  requests.
+
+``` python
+from django.shortcuts import render, redirect
+
+def index(request):
+  if request.method == 'POST':
+    name = request.POST.get('name')
+    # do something with name
+    # redirect to the same page
+    return redirect('myapp:index')
+  
+  # this part is reached if we did not receive a POST request
+  return render(request, 'myapp/index.html')
+```
+
+## 5.2 Using [Django forms](https://docs.djangoproject.com/en/4.1/topics/forms/#building-a-form-in-django)
+
+Instead of relying on the html on what information we want to gather, we
+can also make use of Django forms. A form is a Python class inheriting
+`forms.Form` from the `django` package. It is here where we specify the
+attributes, or values, that we want to gather.
+
+``` python
+# views.py
+from django import forms
+
+class NewPersonForm(forms.Form):
+  name = forms.CharField(label='Name')
+  age = forms.IntegerField(label='Age', min_value=0, max_value=120)
+
+# to include the form in the html, pass an instance of the class to the template
+def index(request):
+  return render(request, 'myapp/index.html', {
+    'person_form': NewPersonForm()
+  })
+```
+
+Notice how we have specified some additional information about the
+fields, i.e., what label they have, if they accept characters or just
+numbers, and what numbers the input should not exceed. There are [many
+more
+fields](https://docs.djangoproject.com/en/4.1/ref/forms/fields/#core-field-arguments)
+we could specify.
+
+Then, to include the Django form inside our html, we simply put the
+variable inside two curly braces.
+
+``` html
+<!doctype html>
+<html>
+  <body>
+    <h1>Visit one of our many sites</h1>
+    <form action="{% url 'myapp:index' %}" method="post">
+      <!-- add csrf protection -->
+      {% csrf_token %}
+      <!-- user content -->
+      {{ person_form }}
+      <input type="submit" value="Submit" />
+    </form>
+  <body/>
+</html>
+```
+
+<details>
+<summary>
+Resulting html
+</summary>
+
+``` html
+<!doctype html>
+<html>
+  <body>
+    <h1>Visit one of our many sites</h1>
+    <form action="/myapp/" method="post">
+      <!-- add csrf protection -->
+      <input type="hidden" name="csrfmiddlewaretoken" value="BLHFM6KYZlC4OCECmoP1pSw1o4yb7zemmiKqnIbR4XUCPdozIfMbOTyk0V1YIHkV">
+      <!-- user content -->
+      <tr>
+    <th><label for="id_name">Name:</label></th>
+    <td>
+      
+      <input type="text" name="name" required id="id_name">
+      
+      
+    </td>
+  </tr>
+
+  <tr>
+    <th><label for="id_age">Age:</label></th>
+    <td>
+      
+      <input type="number" name="age" required id="id_age">
+      
+      
+        
+      
+    </td>
+  </tr>
+      <input type="submit" value="Submit" />
+    </form>
+  <body/>
+</html>
+```
+
+</details>
+
+Doing this has several advantages.
+
+- For one, it lets Django automatically perform client-side validation,
+  giving direct feedback to the user when something is wrong with what
+  they have entered.
+- Second, it also allows us to perform simple server-side checks. This
+  is necessary as it is possible for the user to circumvent checks.
+- This also transitions nicely to the way models are handled in Django.
+  This will not be discussed here, however.
+
+With the form set up, the only thing left to do is to check on the
+server if the given input is valid.
+
+``` python
+def index(request):
+  # if it isn't a POST request, simply render the page
+  if request.method != 'POST':
+    return render(request, 'hello/index.html', { 'person_form': NewPersonForm() })
+  
+  # we have received a POST request. Try to read it into a variable.
+  form = NewPersonForm(request.POST)
+  
+  # perform server-side check if the input is valid or not.
+  # If it isn't, re-render the page with the input the user has entered.
+  if not form.is_valid():
+    return render(request, 'hello/index.html', { 'person_form': form })
+
+  # checks passed, we are working with clean data!
+  # in that case, we are just reading out the information and returning a JSON response.
+  name = form.cleaned_data['name']
+  age = form.cleaned_data['age']
+  return JsonResponse({
+    'name': name,
+    'age': age
+  })
+```
+
+# 6 Sessions
+
+For the next time :)
