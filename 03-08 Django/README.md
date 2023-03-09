@@ -872,7 +872,7 @@ server if the given input is valid.
 def index(request):
   # if it isn't a POST request, simply render the page
   if request.method != 'POST':
-    return render(request, 'hello/index.html', { 'person_form': NewPersonForm() })
+    return render(request, 'myapp/index.html', { 'person_form': NewPersonForm() })
   
   # we have received a POST request. Try to read it into a variable.
   form = NewPersonForm(request.POST)
@@ -880,7 +880,7 @@ def index(request):
   # perform server-side check if the input is valid or not.
   # If it isn't, re-render the page with the input the user has entered.
   if not form.is_valid():
-    return render(request, 'hello/index.html', { 'person_form': form })
+    return render(request, 'myapp/index.html', { 'person_form': form })
 
   # checks passed, we are working with clean data!
   # in that case, we are just reading out the information and returning a JSON response.
