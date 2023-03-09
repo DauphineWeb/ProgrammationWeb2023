@@ -893,4 +893,38 @@ def index(request):
 
 # 6 Sessions
 
-For the next time :)
+If we want to save data from a user, we may want this data to be associated with this user only, such that no one else has access to it.
+For example, think of a ToDo-Application, where each user should have their own list and not be interfering with each other.
+Or later, we may want to authenticate a user and remember them after they have successfully logged in.
+
+Sessions let us store data for each new visit to a site.
+
+In the example below, we use a session to keep track of the contacts a person has entered. We also separate the index page, which only displays the content, from the add page, which contains a form that sends a POST request.
+
+```python
+def index(request):
+  # check if session already exists
+  if 'phonebook' not in request.session:
+    # create a new list
+    request.session['phonebook'] = []
+  
+  return render(request, 'myapp/index.html', { 'phonebook': request.session['phonebook'] })
+
+def add(request):
+  if request.method != 'POST':
+    return render(request, 'myapp/add.html', { 'form': NewPhoneForm() })
+  
+  form = NewPhoneForm(request.POST)
+  if not form.is_valid():
+    return render(request, 'myapp/add.html', { 'form': form })
+  
+  name = form.cleaned_data['name']
+  number = form.cleaned_data['number']
+  
+  # add name and phone number to session
+  request.session['phonebook'] += [(name, number)]
+  return redirect('myapp:index')
+```
+
+`python manage.py runserver` does not work, however, the reason for which is not important yet.
+For now, it is only important to know that `python manage.py migrate` fixes this issue :)
