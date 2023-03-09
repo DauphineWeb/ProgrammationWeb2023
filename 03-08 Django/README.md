@@ -7,8 +7,15 @@
   - [3.1 Routing to your app](#routing-to-your-app)
   - [3.2 Parameterized routes](#parameterized-routes)
 - [4 Templates](#templates)
-  - [4.1 Loops](#loops)
-  - [4.2 if-else](#if-else)
+  - [4.1 Inserting variables](#inserting-variables)
+  - [4.2 Loops](#loops)
+  - [4.3 if-else](#if-else)
+  - [4.4 Lorem ipsum](#lorem-ipsum)
+  - [4.5 Linking to static files](#linking-to-static-files)
+  - [4.6 Linking between pages](#linking-between-pages)
+  - [4.7 Blocks (or template
+    inheritance)](#blocks-or-template-inheritance)
+  - [4.8 csrf tokens](#csrf-tokens)
 
 # Django
 
@@ -308,8 +315,11 @@ def index(request):
   return render(request, 'myapp/index.html')
 ```
 
-This now lets us return basic html files. To make the html now dynamic,
-Django offers a custom [templating
+This now lets us return basic html files.
+
+## 4.1 Inserting variables
+
+To make the html now dynamic, Django offers a custom [templating
 language](https://docs.djangoproject.com/en/4.1/ref/templates/language/)
 that changes the html before it is returned to the user.
 
@@ -337,10 +347,10 @@ insert values passed in using double curly braces.
 Once the user receives the html, they do not see any of the curly braces
 or what’s within them. It will be replaced by the number 42.
 
-What follows are some examples on what other features the templating
-language includes.
+Below are some more of the functionalities that this templating language
+enables us to do.
 
-## 4.1 [Loops](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#std-templatetag-for)
+## 4.2 [Loops](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#std-templatetag-for)
 
 *Python file*
 
@@ -368,7 +378,7 @@ def index(request):
 
 <details>
 <summary>
-*Resulting html*
+Resulting html
 </summary>
 
 ``` html
@@ -396,7 +406,7 @@ def index(request):
 
 </details>
 
-## 4.2 [if-else](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#if)
+## 4.3 [if-else](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#if)
 
 *Python file*
 
@@ -425,7 +435,7 @@ def index(request):
 
 <details>
 <summary>
-*Resulting html*
+Resulting html
 </summary>
 
 ``` html
@@ -440,4 +450,263 @@ def index(request):
 ```
 
 (there’s roughly a 3/4 chance that this your output is different)
+</details>
+
+## 4.4 [Lorem ipsum](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#lorem)
+
+Create some generic lore-ipsum text. No data is necessary from the
+`render()` function.
+
+``` html
+<!doctype html>
+<html>
+  <body>
+    <h1>Some latin text</h1>
+    {% lorem 3 p %}
+  </body>
+</html>
+```
+
+<details>
+<summary>
+Resulting html
+</summary>
+
+``` html
+<!doctype html>
+<html>
+<body>
+    <h1>Some latin text</h1>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+    <p>In reiciendis enim voluptates sit repellendus quisquam, recusandae necessitatibus minus illo atque maiores, nobis nisi tenetur ea, cupiditate doloribus facilis error? Itaque aspernatur esse odit voluptates soluta nisi voluptatibus fuga commodi facilis. Consectetur ratione neque repellendus fuga eos, est esse explicabo eligendi accusantium, voluptate fugiat accusamus dicta ullam ut voluptas repellendus provident dolores tenetur beatae, tenetur aliquid molestiae dolorum officiis exercitationem amet dignissimos quidem? Sit error suscipit accusantium est quasi distinctio deleniti aperiam vero voluptate vitae, perspiciatis molestiae quia tenetur sit dolor nobis enim numquam reprehenderit nostrum ab, dicta rem quis aliquid culpa totam consequuntur vel repellat in quasi officiis, doloremque harum aliquam deleniti soluta quia cum, quo pariatur eaque?</p>
+
+    <p>Iusto sequi vero, suscipit repellendus cupiditate totam vel iure delectus nesciunt culpa odio aliquid. Cumque inventore earum vero nesciunt provident facilis ex eveniet aspernatur optio explicabo, hic perferendis expedita magni dicta nulla, consequuntur non magnam inventore reiciendis cumque, cumque nulla dolorum facere amet accusantium dignissimos laboriosam culpa voluptate eius facilis? Delectus nostrum culpa, ipsam labore provident corporis eligendi cumque quaerat aut iure. Quod provident quia non illo officia laborum aspernatur, dolorum repudiandae amet eius ullam minus aspernatur eligendi, quibusdam explicabo mollitia beatae eveniet laborum nostrum maxime repudiandae aperiam cupiditate harum, sunt obcaecati quia adipisci, accusantium enim adipisci sed natus porro cupiditate velit omnis deleniti voluptates.</p>
+</body>
+</html>
+```
+
+</details>
+
+## 4.5 [Linking to static files](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#static)
+
+Static files, such as images, css and js files should be located in
+`myapp/static/myapp/`. I.e., suppose the folder structure looks as
+follows
+
+    .
+    ├── myapp/
+    │   ├── ...
+    │   ├── static/
+    │   │   └── myapp/
+    │   │       └── styles.css
+    │   ├── templates/
+    │   │   └── myapp/
+    │   │       └── index.html
+    │   ├── urls.py
+    │   └── views.py
+    ├── ...
+
+Then, we can dynamically link to that file in our template.
+
+``` html
+<!doctype html>
+<html>
+  <head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'hello/styles.css' %}">
+  </head>
+  <body></body>
+</html>
+```
+
+<details>
+<summary>
+Resulting html
+</summary>
+
+``` html
+<!doctype html>
+<html>
+  <head>
+    
+    <link rel="stylesheet" href="/static/hello/styles.css">
+  </head>
+  <body></body>
+</html>
+```
+
+</details>
+
+## 4.6 [Linking between pages](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#url)
+
+Recall the `myapp/urls.py` file.
+
+``` python
+from django.urls import path
+from . import views
+
+app_name = 'myapp'
+urlpatterns = [
+  path('', views.index, name='index'),
+  path('data', views.get_data, name='get_data')
+]
+```
+
+If we want to link between these pages, we could theoretically enter the
+given url paths (here `/myapp` and `/myapp/data`). To stay flexible,
+however, it is recommended to use the `name` we have specified in our
+`path()` function call and let Django convert it to a valid url.
+
+``` html
+<!doctype html>
+<html>
+  <body>
+    <h1>Visit one of our many sites</h1>
+    <a href="{% url 'myapp:index' %}">The index page</a>
+    <a href="{% url 'myapp:get_data' %}">The data page</a>
+  <body/>
+</html>
+```
+
+<details>
+<summary>
+Resulting html
+</summary>
+
+``` html
+<!doctype html>
+<html>
+  <body>
+    <h1>Visit one of our many sites</h1>
+    <a href="/hello/">The index page</a>
+    <a href="/hello/data">The data page</a>
+  <body/>
+</html>
+```
+
+</details>
+
+## 4.7 [Blocks](https://docs.djangoproject.com/en/4.1/ref/templates/language/#template-inheritance) (or template inheritance)
+
+Many html files share the same structure (i.e., the same sceleton
+throughout, the same navigation bar, the same footer, etc.). To avoid
+duplications, Django allows us to structure our html into block, or, for
+some html to inherit from other html files, also known as **template
+inheritance**.
+
+Assume the following folder structure.
+
+    .
+    ├── myapp/
+    │   ├── ...
+    │   ├── templates/
+    │   │   └── myapp/
+    │   │       ├── index.html
+    │   │       └── layout.html
+    │   ├── urls.py
+    │   └── views.py
+    ├── ...
+
+The `layout.html` file creates the basic html elements surrounding our
+main content.
+
+``` html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'myapp/styles.css' %}">
+  </head>
+  <body>
+    {% block body %}
+    {% endblock %}
+  </body>
+</html>
+```
+
+For our main content, we only have to extend from the layout and fill in
+the necessary blocks.
+
+``` html
+{% extends "myapp/layout.html" %}
+
+{% block body %}
+  <h1>Hello world</h1>
+  <p>Welcome to my site.</p>
+{% endblock %}
+```
+
+<details>
+<summary>
+Resulting html
+</summary>
+
+``` html
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    
+    <link rel="stylesheet" href="/static/hello/styles.css">
+  </head>
+  <body>
+    
+  <h1>Hello world</h1>
+  <p>Welcome to my site.</p>
+
+  </body>
+</html>
+```
+
+</details>
+
+## 4.8 [csrf tokens](https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#csrf-token)
+
+`form`s using POST requests are vulnerable to [Cross-Site Request
+Forgery
+(CSRF)](https://www.squarefree.com/securitytips/web-developers.html#CSRF)
+attacks. Django automatically protects against those by requiring these
+POST request to come with a unique CSRF token. Not including those in a
+form will lead to an error.
+
+``` html
+<!doctype html>
+<html>
+  <body>
+    <h1>Enter your credit card number</h1>
+    <form action="{% url 'hello:index' %}" method="post">
+      <!-- add csrf protection -->
+      {% csrf_token %}
+      <!-- user input below -->
+      <input type="text" name="name" />
+      <input type="submit" />
+    </form>
+  <body/>
+</html>
+```
+
+<details>
+<summary>
+Resulting html
+</summary>
+
+``` html
+<!doctype html>
+<html>
+  <body>
+    <h1>Enter your credit card number</h1>
+    <form action="/myapp/" method="post">
+      <!-- add csrf protection -->
+      <input type="hidden" name="csrfmiddlewaretoken" value="lcob9Z7kdi7HM7x067aeSZjw4vEqg3U76JrWKBydiUpfNIhXsY7oh0lPGm7dRb0G">
+      <!-- user input below -->
+      <input type="text" name="name" />
+      <input type="submit" />
+    </form>
+  <body/>
+</html>
+```
+
+The value of the csrf token will change with every refresh.
 </details>
