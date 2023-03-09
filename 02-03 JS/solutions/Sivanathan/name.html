@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is the gender ?</title>
+
+    <style>
+    body{
+      font: small-caps 1em sans-serif;
+      color:whitesmoke;
+      width:95%;
+      height: 100%;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content:center;
+      gap:2%;
+      background-color:black
+    }
+
+    img{
+      width:30%;
+      height: auto;
+    }
+
+
+
+    </style>
+
+
+</head>
+<body>
+    <h1> Predict the gender </h1>
+    <p>Write a name and click to predict what is the gender<p>
+    <input type="text" name="value" id="textInput">
+    <button id="send">Send</button>
+    <p id="gender"></p>
+    <p id="proba"></p>
+    <img src="https://images.emojiterra.com/google/android-nougat/512px/2754.png"  alt="genderimg" title="?" id='genderimg'/>
+    <script>
+    function updateValue(value) {
+            console.log(value)
+            if(value.gender===null ) return
+            document.getElementById('gender').innerText = value.gender
+            document.getElementById('proba').innerText = value.probability
+            if(value.gender==="male"){document.getElementById('genderimg').src ="https://cdn-icons-png.flaticon.com/512/146/146007.png"}
+            else if(value.gender==="female"){document.getElementById('genderimg').src="https://cdn-icons-png.flaticon.com/512/146/146005.png"}
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelector('#send').addEventListener('click',function(){
+            fetch('https://api.genderize.io/?name='+document.getElementById('textInput').value)
+                .then(response => response.json())
+                .then(data => updateValue(data));
+
+          });
+
+
+        });
+    </script>
+</body>
+</html>

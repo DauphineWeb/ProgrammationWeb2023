@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Facts</title>
+
+    <style>
+    body{
+      font: italic 1.2em "Fira Sans", serif;
+      width:95%;
+      height: 100%;
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content:center;
+      gap:2%;
+      /*background-color: pink;*/
+      background-image: url(https://static.vecteezy.com/system/resources/previews/007/001/977/non_2x/white-paw-footprints-of-dog-or-cat-seamless-pattern-cute-children-s-baby-background-print-on-textile-fabric-wallpaper-illustration-on-pink-background-free-vector.jpg)
+    }
+    img{
+      width:100%;
+      height: auto;
+    }
+    #content{
+
+      width: 65%;
+      height:35em;
+      background-color:  #FAEBD7;
+      display: flex;
+      flex-direction: column;
+      justify-content:top;
+      gap:2%;
+      padding: 1em;
+      overflow-y: auto;
+      border-radius: 2%;
+    }
+
+
+    #newFact{
+      width:30%;
+      height: auto;
+      background-color: #FAEBD7	;
+      border-radius: 1%;
+    }
+    h1{
+      width: 100%;
+      text-align: center;
+    }
+
+    li{
+      list-style: none;
+      padding: : 1%;
+      border-color: black;
+    }
+
+
+
+    </style>
+
+
+</head>
+<body>
+  <h1> Cat Facts</h1>
+
+  <button id="newFact">Click Here for new fact about cats !<img src="https://img.freepik.com/free-vector/cute-cat-sitting-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-4148.jpg?w=2000"  alt="cat" title="Cat !"/></button>
+
+
+
+    <ul id="content">
+    </ul>
+
+
+
+    <script>
+    function updateValue(value) {
+            let list=document.querySelector('#content');
+            let elem=document.createElement('li');
+            elem.innerText=value;
+            list.insertBefore(elem,list.firstChild);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelector('#newFact').addEventListener('click',function(){
+            fetch('https://catfact.ninja/fact')
+                .then(response => response.json())
+                .then(data => updateValue(data.fact));
+
+          });
+
+
+        });
+    </script>
+</body>
+</html>

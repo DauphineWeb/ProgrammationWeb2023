@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cat's fact</title>
+</head>
+<style>
+    @import url("cat.css");
+
+    #catFact {
+        text-align: center;
+    }
+
+    /*
+    @font-face {
+        font-family: "Google Sans";
+        src: url("../fonts/GoogleSans-Regular.ttf");
+    }
+     */
+
+    #catFactButton {
+        background-color: #f2f2f2;
+        border: none;
+        color: #4d4d4d;
+        cursor: pointer;
+        font-family: "Google Sans", sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        padding: 10px 20px;
+        margin: 20px auto;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        transition-duration: 0.4s;
+        border-radius: 10px;
+        animation: catFactButtonAnimation;
+    }
+
+    #catFactList {
+        list-style-type: none;
+        padding: 0;
+        font-family: "Google Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: #4d4d4d;
+        text-align: left;
+        line-height: 1.5;
+        margin: 30px auto 0;
+        width: 50%;
+    }
+
+    #catFactList li {
+        color: white;
+    }
+
+    #notification {
+        text-align: center;
+        font-family: "Google Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: #545454;
+        line-height: 1.5;
+        margin: 30px auto 0;
+        width: 20%;
+    }
+
+    #resetButton {
+        position: fixed;
+        top: 0;
+        right: 20px;
+        width: 30px;
+        height: 30px;
+        background-color: #4d4d4d;
+        color: white;
+        font-size: 20px;
+        font-weight: 400;
+        border: none;
+        cursor: pointer;
+        margin: 20px auto;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        transition-duration: 0.4s;
+        border-radius: 10px;
+    }
+
+    #resetButton:hover {
+        background-color: #d93333;
+    }
+
+</style>
+
+<body>
+
+<div id="marco">
+    <div id="horizon"></div>
+    <div id="moon"></div>
+    <div id="catty"></div>
+    <div id="wall"></div>
+    <div id="building"></div>
+</div>
+
+<div id="notification">
+    <p>Click on the cat to hear a "meow" or click on the button to get a cat's fact</p>
+</div>
+
+<div id="catFact">
+    <button id="catFactButton">Cat's fact 😹</button>
+    <ol id="catFactList"></ol>
+</div>
+
+<div>
+    <button id="resetButton">&#10006</button>
+</div>
+
+<script>
+    let catFactButton = document.getElementById("catFactButton");
+    let catFactList = document.getElementById("catFactList");
+    catFactButton.addEventListener("click", function () {
+        fetch("https://catfact.ninja/fact")
+            .then(response => response.json())
+            .then(data => {
+                let newCatFact = document.createElement("li");
+                newCatFact.innerHTML = data.fact;
+                newCatFact.style.fontWeight = "bold";
+                newCatFact.style.fontSize = "20px";
+                newCatFact.style.color = "white";
+                newCatFact.style.marginBottom = "20px";
+                catFactList.prepend(newCatFact);
+                let oldCatFacts = document.querySelectorAll('li');
+                for (let i = 1; i < oldCatFacts.length; i++) {
+                    oldCatFacts[i].style.color = "grey";
+                    oldCatFacts[i].style.fontWeight = "normal";
+                    oldCatFacts[i].style.fontSize = "14px";
+                }
+                window.scrollTo(0, 0);
+            })
+    });
+
+    let cat = document.getElementById("catty");
+    cat.addEventListener("click", function () {
+        let randomSound = Math.floor(Math.random() * 3) + 1;
+        let sound = new Audio("meow/" + randomSound + ".mp3");
+        sound.play();
+    });
+    catFactButton.addEventListener("click", function () {
+        let randomSound = Math.floor(Math.random() * 3) + 1;
+        let sound = new Audio("meow/" + randomSound + ".mp3");
+        sound.play();
+    });
+
+    catFactButton.addEventListener("mouseover", function () {
+        catFactButton.style.backgroundColor = "#4d4d4d";
+        catFactButton.style.color = "white";
+    });
+    catFactButton.addEventListener("mouseout", function () {
+        catFactButton.style.backgroundColor = "#f2f2f2";
+        catFactButton.style.color = "#4d4d4d";
+    });
+
+    let catFactButtonAnimation = catFactButton.animate([
+        {transform: "translateY(0)"},
+        {transform: "translateY(-10px)"}
+    ], {
+        duration: 1000,
+        iterations: Infinity,
+        direction: "alternate",
+        easing: "ease-in-out"
+    });
+    catFactButton.addEventListener("mouseover", function () {
+        catFactButtonAnimation.pause();
+    });
+    catFactButton.addEventListener("mouseout", function () {
+        catFactButtonAnimation.play();
+    });
+
+    let catEmoji = ["😹", "😸", "😺", "😻", "😼", "😽", "😾", "😿", "🙀"];4
+    catFactButton.addEventListener("click", function () {
+        let randomCatEmoji = Math.floor(Math.random() * catEmoji.length);
+        let newCatFact = document.querySelector("li");
+        newCatFact.innerHTML = catEmoji[randomCatEmoji] + " " + newCatFact.innerHTML;
+    });
+
+    let resetButton = document.getElementById("resetButton");
+    resetButton.addEventListener("click", function () {
+        catFactList.innerHTML = "";
+    });
+
+    let animateResetButton = resetButton.animate([
+        {transform: "rotate(0deg)"},
+        {transform: "rotate(360deg)"}
+    ], {
+        duration: 3000,
+        iterations: Infinity,
+        direction: "alternate",
+        easing: "ease-in-out"
+    });
+    resetButton.addEventListener("click", function () {
+        resetButton.animate([
+            {transform: "scale(1)"},
+            {transform: "scale(1.2)"}
+        ], {
+            duration: 500,
+            easing: "ease-in-out"
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

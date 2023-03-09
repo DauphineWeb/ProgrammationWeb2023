@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-image: url("https://media.istockphoto.com/id/638949850/vector/cats-vector-heads-illustration.jpg?s=612x612&w=0&k=20&c=ElbS03847__syxiBPwDXfryVNxCWc5qHym3qpk8IbQQ=");
+    background-position: center;
+    background-repeat: repeat;
+  }
+  
+  h1 {
+    margin-bottom: 40px;
+    font-size: 56px;
+    color: #231562;
+    border: #231562 bold;
+  }
+  
+  #fact-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #9793de;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  }
+  
+  #fact-container {
+    margin-top: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+  }
+
+  .title-box {
+    background-color: rgba(255, 255, 255, 0.831);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .fact {
+    margin-top: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    text-align: left;
+    transition: all 0.5s ease-in-out;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  
+  .show-fact {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .fact p {
+    font-size: 22px ;
+    margin: 0;
+  }
+  
