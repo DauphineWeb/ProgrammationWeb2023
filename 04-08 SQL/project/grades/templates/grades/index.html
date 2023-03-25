@@ -1,0 +1,18 @@
+{% extends 'grades/layout.html' %}
+
+{% block body %}
+<h1>Problem Sets</h1>
+
+<table>
+    <thead><th>Title</th><th>Due date</th></thead>
+    {% for pset in psets %}
+    <tr>
+        <td><a href="{% url 'pset' pset.id %}">{{ pset.title }}</a></td>
+        <td>{{ pset.due }}</td>
+    </tr>
+    {% endfor %}    
+    <tr>
+        <td colspan="2" style="text-align: center"><em><a href="{% url 'add' %}">📝 Add new problem set</a></em></td>
+    </tr>
+</table>
+{% endblock %}

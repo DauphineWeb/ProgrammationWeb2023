@@ -1,0 +1,14 @@
+{% extends "grades/layout.html" %}
+
+{% block body %}
+
+
+<h1>Create new problem set</h1>
+<form action="{% url 'add' %}" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Submit</button>
+</form>
+
+<a href="{% url 'index' %}">Go back home</a>
+{% endblock %}

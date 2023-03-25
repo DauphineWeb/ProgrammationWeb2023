@@ -1,0 +1,19 @@
+{% extends "grades/layout.html" %}
+
+{% block body %}
+
+<a href="{% url 'index' %}">Home</a>
+
+<h1>{{ pset.title }}</h1>
+<h2>Due: {{ pset.due }}</h2>
+
+{% for question in questions %}
+<h3>{{ question.title }}</h3>
+<p>{{ question.description }} <em>{{ question.score }}</em></p>
+
+{% empty %}
+<p>No questions present.</p>
+
+{% endfor %}
+
+{% endblock %}
