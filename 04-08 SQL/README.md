@@ -129,7 +129,7 @@ We may filter the rows as follows.
 
 <details>
 <summary>
-SELECT \* FROM books WHERE author = "Scott Fitzgerald";
+SELECT * FROM books WHERE author = "Scott Fitzgerald";
 </summary>
 
 ![](res/t2.jpg)
@@ -137,7 +137,7 @@ SELECT \* FROM books WHERE author = "Scott Fitzgerald";
 </details>
 <details>
 <summary>
-SELECT \* FROM books WHERE year \< 1950;
+SELECT * FROM books WHERE year < 1950;
 </summary>
 
 ![](res/t3.jpg)
@@ -145,7 +145,7 @@ SELECT \* FROM books WHERE year \< 1950;
 </details>
 <details>
 <summary>
-SELECT \* FROM books WHERE year \> 1970 AND author = "Scott Fitzgerald";
+SELECT * FROM books WHERE year > 1970 AND author = "Scott Fitzgerald";
 </summary>
 
 ![](res/t5.jpg)
@@ -153,7 +153,7 @@ SELECT \* FROM books WHERE year \> 1970 AND author = "Scott Fitzgerald";
 </details>
 <details>
 <summary>
-SELECT \* FROM books WHERE year \> 1970 OR author = "Scott Fitzgerald";
+SELECT * FROM books WHERE year > 1970 OR author = "Scott Fitzgerald";
 </summary>
 
 ![](res/t6.jpg)
