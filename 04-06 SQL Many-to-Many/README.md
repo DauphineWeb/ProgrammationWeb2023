@@ -267,7 +267,7 @@ for actor in actors:
     print(f'{actor.name} - {actor.num_movies} movie(s)')
 ```
 
-As always, it's well worth to have a look at Django's documentation, containing many helpful examples and references on how to use:
+As always, it is well worth the time to have a look at Django's documentation, containing many helpful examples and references on how to use:
 
 - [`aggregate(), annotate()`](https://docs.djangoproject.com/en/4.2/topics/db/aggregation/)
 - [`Prefetch()`](https://docs.djangoproject.com/en/4.2/ref/models/querysets/#prefetch-objects)
