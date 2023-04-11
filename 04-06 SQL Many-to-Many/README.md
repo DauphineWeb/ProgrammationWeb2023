@@ -127,7 +127,7 @@ SELECT actor_id FROM actor_movie WHERE movie_id = 3; -- 3, 4
 SELECT name FROM actor WHERE id IN (3, 4); -- Leonardo DiCaprio, Kate Winslet
 ```
 
-We can skip many of the first two steps by simply [joining the
+We can skip the first two steps by simply [joining the
 tables](https://github.com/DauphineWeb/ProgrammationWeb2023/tree/main/03-23%20SQL#17-joining-tables)
 together. With all the columns present, there is no need then to
 remember the ids that we are looking for.
