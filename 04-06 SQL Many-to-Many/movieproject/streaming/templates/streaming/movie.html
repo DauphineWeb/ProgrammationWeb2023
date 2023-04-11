@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+    <style>
+        img {
+            height: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ movie.title }}</h1>
+    {% for review in movie.reviews.all %}
+    <p>
+        <img src="{% static 'streaming/' %}{{review.rating}}.png" alt="{{ review.rating }} star rating"> <em>{{review.user.user}}</em>: {{review.comment}}
+    </p>
+    {% endfor %}
+
+    <a href="{% url 'index' %}">Back</a>
+</body>
+</html>
