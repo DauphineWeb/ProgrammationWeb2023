@@ -30,7 +30,7 @@ In Django, we have used [template
 inheritance](https://github.com/DauphineWeb/ProgrammationWeb2023/tree/main/03-08%20Django#47-blocks-or-template-inheritance)
 in cases where the overall structure of a site stays the same and only
 the content changes. Since we always serve the entire website, it seems
-wasteful to send that bytes of data that essentially never change.
+wasteful to send bytes of data that essentially never change.
 
 With [single-page
 applications](https://en.wikipedia.org/wiki/Single-page_application)
@@ -83,10 +83,10 @@ three different pages. Feel free to try it
 </html>
 ```
 
-`[id^="page"]` lets us select all elements for which the `id` *starts*
+`[id^="page"]` lets us select all elements for which the `id` *start*
 with the word `"page"`.
 
-Each button contains a [`data`
+Each button includes a [`data`
 attribute](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)
 containing the `id` of a page we may want to show.
 
