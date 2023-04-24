@@ -15,14 +15,14 @@ Dynamic user interfaces
   - [2.3 Applying the animation](#23-applying-the-animation)
 - [3 Introduction to react (next time)](#3-introduction-to-react-next-time)
 
-# Dynamic User Interfaces
+[Click here](https://github.com/DauphineWeb/SPA) to view the project accompanying this README file.
 
 Here, we will look at how we can make a user interface more dynamic and
 intuitive. First, we use base JavaScript functionality to dynamically
 load new content from our Django server and incorporate animations to
 make it more pleasing to look at. Then, we will explore ways in which a
 front-end framework such as React may help us better streamline this
-process by using components and states.
+process by using components and states (except, we are not, this will be a topic for another day).
 
 # 1 Single Page Applications
 
@@ -1097,7 +1097,7 @@ Let’s mitigate this by incorporating an animation. The animation should
 simply fade out the quote and move all quotes below up. First we adjust
 the JavaScript to start some animation that we’ll implement later. Then,
 we can listen to the
-[`'animationend'`](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationend_event).
+[`'animationend'`](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationend_event) event.
 
 ``` js
 document.addEventListener('DOMContentLoaded', function() {
@@ -1116,10 +1116,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 ```
 
-For animation, we’ll set three keyframes. From the starting point, the
+For the animation, we’ll set three keyframes. From the starting point, the
 quote should first fade out to nothingness. Then, the height should
 change from its full height to 0 pixels, giving the illusion that all
-quote from the bottom are moving upwards.
+quotes below are moving upwards.
 
 ``` css
 /* quotes/static/quotes/styles.css */
