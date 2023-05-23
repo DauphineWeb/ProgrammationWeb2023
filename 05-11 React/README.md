@@ -630,11 +630,7 @@ Django REST framework.
 ## Connecting it to our front-end
 
 Instead of working with template files, we start with a completely new
-project that is only concerned with the front-end. The following must be
-installed on your machine to get it to work.
-
-- [NodeJS](https://nodejs.org/en)
-- [React](???)
+project that is only concerned with the front-end. You will need to install [NodeJS](https://nodejs.org/en) to get it to work.
 
 Outside of the Django project, create a new react project. Open the
 newly created folder in your favorite code editor.
@@ -714,7 +710,7 @@ React application).
 ## Fixing CORS
 
 The easiest way to tell Django about port 3000 is to use the
-cors-headers package. Install it using pip.
+[cors-headers](https://pypi.org/project/django-cors-headers/) package. Install it using pip.
 
     pip install django-cors-headers
 
