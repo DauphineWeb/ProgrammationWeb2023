@@ -502,9 +502,6 @@ INSTALLED_APPS = [
 ]
 ```
 
-3.  If you’ve come this far, please tell me. You will be rewarded with
-    some treats 🍫
-
 Previously, we have always manually created a python dictionary object
 and used a
 [`JsonResponse`](https://docs.djangoproject.com/en/4.2/ref/request-response/#jsonresponse-objects)
@@ -512,13 +509,13 @@ to serialize the object. This time, we will make use of the [Django REST
 framework](https://www.django-rest-framework.org) that lets us better
 design our API.
 
-4.  Install the library using `pip`
+3.  Install the library using `pip`
 
 <!-- -->
 
     pip install djangorestframework
 
-5.  Add `rest_framework` to the list of installed apps in
+4.  Add `rest_framework` to the list of installed apps in
     `project/settings.py`
 
 ``` python
@@ -529,7 +526,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-6.  We create a simple model in `app/models.py` that represents some
+5.  We create a simple model in `app/models.py` that represents some
     text.
 
 ``` python
@@ -543,14 +540,14 @@ class Message(models.Model):
         return self.content
 ```
 
-7.  Run migrations.
+6.  Run migrations.
 
 <!-- -->
 
     python manage.py makemigrations
     python manage.py migrate
 
-8.  We can add some values using the django shell.
+7.  We can add some values using the django shell.
 
 ``` shell
 $ python3 manage.py shell         
@@ -568,7 +565,7 @@ In [3]: Message.objects.all()
 Out[3]: <QuerySet [<Message: msg 0>, <Message: msg 1>, <Message: msg 2>, ..., <Message: msg 9>]>
 ```
 
-9.  Using the rest framework, we create a separate serializer. To do
+8.  Using the rest framework, we create a separate serializer. To do
     this, add a `app/serializers.py` file.
 
 ``` python
@@ -582,7 +579,7 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = ['id', 'content']
 ```
 
-10. In `app/views.py`, we then declare a new class that specifies how
+9. In `app/views.py`, we then declare a new class that specifies how
     that tour `MessageSerializer` should be used to turn `Message`
     objects into JSON objects. Note that we are using a [class-based
     view](https://docs.djangoproject.com/en/4.2/topics/class-based-views/)
@@ -601,7 +598,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
 ```
 
-11. Finally, `project/urls.py` should offer a url pointing to our
+10. Finally, `project/urls.py` should offer a url pointing to our
     class-based view.
 
 ``` python
