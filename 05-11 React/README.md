@@ -1,7 +1,6 @@
 React and Django
 ================
 
-- [Dynamic User Interfaces: Part 2](#dynamic-user-interfaces-part-2)
 - [React](#react)
   - [Components](#components)
   - [Props](#props)
