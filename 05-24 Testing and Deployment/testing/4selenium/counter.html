@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CodePen - A Pen by DauphineWeb</title>
+
+    <script>
+        let countElement;
+        let counter = 0;
+        function changeCounter(amount) {
+            counter += amount;
+            countElement.innerText = counter;
+        }
+        document.addEventListener('DOMContentLoaded', function (event) {
+            countElement = document.querySelector('#count');
+            document.querySelector('#increment').onclick = () => changeCounter(1);
+            document.querySelector('#decrement').onclick = () => changeCounter(-1);
+        });
+    </script>
+
+    <style>
+        * {
+            text-align: center;
+            font-size: 20pt;
+            font-family: sans-serif;
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <p>Current count: <span id="count">0</span><br>
+    </p>
+    <button id="increment">Increment</button>
+    <button id="decrement">Decrement</button>
+    <br>
+    <input type="text" name="username" id="username">
+    <input type="password" name="password" id="password">
+
+</body>
+
+</html>
