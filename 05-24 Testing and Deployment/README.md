@@ -4,7 +4,9 @@ Testing and Deployment
 
 # Uploading files
 
-1. Add MEIDA_...
+A simple way to host user uploaded files is to set the `MEDIA_ROOT` and `MEDIA_URL` variables in `settings.py`, adding these paths to our application and letting Django handle the rest.
+
+1. Setting `MEDIA_ROOT` (the physical directory) and `MEDIA_URL` (the path in the url) where user uploaded media is saved.
 
 ```py
 # https://stackoverflow.com/a/72083188/7669319
@@ -16,7 +18,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 ```
 
-2. Create model
+2. In our model, add something that uses files or images. In the case of an `ImageField`, [pillow](https://pillow.readthedocs.io/en/stable/) needs to be installed. 
 
 ```py
 from django.contrib.auth.models import User
@@ -26,7 +28,7 @@ class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to='profile_pictures', default='default.jpg')
 ```
 
-3. Create form
+3. From the model, create a form that includes the field requiring user uploaded data.
 
 ```py
 from django import forms
@@ -38,7 +40,7 @@ class ProfilePictureForm(forms.ModelForm):
         fields = ['profile_picture']
 ```
 
-4. Create view
+4. Create a view containing the form. Here are two ways to do this; one using Django's [class based views](https://docs.djangoproject.com/en/4.2/topics/class-based-views/)...
 
 ```py
 from django.shortcuts import render
@@ -64,7 +66,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user.userprofile
 ```
 
-or, with function
+... and one using reqular old view functions.
 
 ```py
 from django.shortcuts import render, redirect
@@ -92,7 +94,7 @@ def user_profile_update(request):
     return render(request, 'users/user_profile.html', context)
 ```
 
-5. Create urls
+5. Add the view to `urls.py`. In particular, we need to include `+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)` after the `urlpatterns` list.
 
 ```py
 from django.contrib.auth import views as auth_views
@@ -105,23 +107,23 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('profile/', views.profile, name='profile'),
     path('edit/', views.UserProfileUpdateView.as_view(), name='edit'),
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ```
 
 ## Doing it with Microsoft
 
-Azure Blob Storage
+Using the project's local storage for saving user uploaded data is bad practice.
+Normally, using some static storage options is the way to go (i.e., [Amazon S3 object storage](https://aws.amazon.com/s3/), [Microsoft Blob Storage](https://azure.microsoft.com/en-us/products/storage/blobs/), [Google Cloud storage](https://cloud.google.com/storage), ...). These three listed offer an easy way to integrate their storage system into your Django application, usually just by installing and adding some middleware and changing some settings (i.e., [Amazon S3](https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html), [Azure Storage](https://django-storages.readthedocs.io/en/latest/backends/azure.html), [Google Cloud Storage](https://django-storages.readthedocs.io/en/latest/backends/gcloud.html)).
 
-Install
+Here is just an example on how to incorporate Microsoft's [Azure Storage](https://django-storages.readthedocs.io/en/latest/backends/azure.html) into Django.
+
+1. Install the `django-storages[azure]` package.
 
 ```
 pip3 install django-storages[azure]
 ```
 
-Add to settings.py
+2. Add `storages` to the list of installed apps in `settings.py`, call `load_dotenv()`, and set the default values and credentials associated with your Azure account.
 
 ```py
 from dotenv import load_dotenv
@@ -141,7 +143,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 MEDIA_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/{AZURE_CONTAINER}/"
 ```
 
-Environment file for credentials.
+3. In the case of environment variables, make sure to set them somewhere (either on your system itself, in some `.env` file, by passing these variables directly on startup to the program or in the docker container)
 
 ```
 AZURE_ACCOUNT_NAME=<your-account-name>
@@ -149,15 +151,25 @@ AZURE_ACCOUNT_KEY=<your-account-key>
 AZURE_CONTAINER=<your-container-name>
 ```
 
-### SAS
+That's it!
 
-Shared Access Signatures
+## SAS
+
+The uploaded files are currently visible to everyone. To manage permissions and who gets to access them, [Shared Access Signatures](https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview) is one way to control it. SAS is specific to Azure; for Amazon S3 you'd use [presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html), for Google Cloud [signed URLs](https://cloud.google.com/storage/docs/access-control/signed-urls).
+
+All of them are similar, in that the credentials to some data is directly stored in the URL itself.
+
+![SAS Storage URI](res/sas-storage-uri.svg)
+
+Here, we will look how this is done in the specific case of Microsoft's Azure Blob Storage.
+
+1. Install `azure-storage-blob`.
 
 ```
 pip install azure-storage-blob
 ```
 
-Create private storage
+2. Create a private storage class in `myapp/storage_backends.py`. The `url()` function generates a URL to a file that has a SAS token attached to it.
 
 ```py
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
@@ -178,7 +190,7 @@ class AzurePrivateStorage(AzureStorage):
         return blob_url + '?' + sas_token
 ```
 
-Use this private storage as default.
+3. Set the newly createed `AzurePrivateStorage` class as the default backend (make sure to change `myapp` to your application name).
 
 ```py
 DEFAULT_FILE_STORAGE = 'myapp.storage_backends.AzurePrivateStorage'
@@ -458,6 +470,10 @@ Tests are especially useful if the function already works as expected, but we wa
 
 ## Testing in Django
 
+Django offers its own extension of a testing framework that is very similar to what we have just seen.
+
+To start off, we'll introduce two models, `Actor` and `Movie`.
+
 ```py
 # models.py
 from django.db import models
@@ -476,6 +492,8 @@ class Movie(models.Model):
     def is_valid(self):
         return (self.duration >= 0) or (1 <= self.rating <= 5)
 ```
+
+Next, in `tests.py`, we import `TestCase` from `django.test`. Inside our test class, we first define a `setUp` function. This function is called before running the test functions. It creates a temporary database with temporary tables that will be destroyed after each test.
 
 ```py
 # tests.py
@@ -499,7 +517,16 @@ class MovieModelTest(TestCase):
         self.movie2 = Movie.objects.create(title="Movie 2", duration=100, rating=4)
         self.movie2.actors.add(self.actor1)
         self.movie2.favorited_by.add(self.user1, self.user2)
+```
 
+Finally, we'll create several `test_` functions to check if our models and its utility functions behave the way we expect them to.
+
+```python
+class MovieModelTest(TestCase):
+
+    def setUp(self):
+        # ...
+    
     def test_valid(self):
         movie = Movie(title="Test Movie", duration=120, rating=5)
         self.assertTrue(movie.is_valid())
@@ -529,12 +556,20 @@ class MovieModelTest(TestCase):
 
 ## Testing views with Client
 
+Testing views requires some extra setup as we want to simulate the normal conversation a browser has with the server. In other words, we wish to simulate an entire HTTP request.
+
+In Django, this is done with the [Client](https://docs.djangoproject.com/en/4.2/topics/testing/tools/#the-test-client) class.
+
+First, we introduce an index page that returns a page containing all movies.
+
 ```py
 # views.py
 def index(request):
     movies = Movie.objects.all()
     return render(request, 'movies/index.html', {'movies': movies})
 ```
+
+For completeness' sake, here is what the html could look like.
 
 ```html
 <!-- templates/movies/index.html -->
@@ -556,15 +591,25 @@ def index(request):
 </html>
 ```
 
+Next, our `setUp()` function creates a new `Client` object.
+
 ```py
 # tests.py
 class MovieViewTest(TestCase):
-
     def setUp(self):
         self.client = Client()
         self.movie1 = Movie.objects.create(title="Movie 1", duration=120, rating=5)
         self.movie2 = Movie.objects.create(title="Movie 2", duration=100, rating=4)
-        
+```
+
+Finally, we can use `client.get()` or `client.post()` to simulate some request and check the response we got back. Below are just some examples for values we can look for.
+
+```py
+# tests.py
+class MovieViewTest(TestCase):
+    def setUp(self):
+        # ...
+
     def test_index_view(self):
         # Use the client to perform actions just like a user
         response = self.client.get(reverse('index'))
@@ -582,10 +627,13 @@ class MovieViewTest(TestCase):
         # Check that the movie titles appear in the rendered HTML
         self.assertContains(response, str(self.movie1.title))
         self.assertContains(response, str(self.movie2.title))
-
 ```
 
 ## Browser Testing
+
+Finally, for more complex tasks, it is also possible to simulate user actions in the browser itself. This includes, for instance, clicking a button, typing things into a search field, waiting for images to load and much more.
+
+For simplicity sake, below is an example of a simple account HTML file.
 
 ```html
 <!DOCTYPE html>
@@ -635,13 +683,14 @@ class MovieViewTest(TestCase):
 </html>
 ```
 
-Instead of clicking around, we use [Selenium](https://www.selenium.dev) to do the clicking for us.
-[ChromeDriver](https://chromedriver.chromium.org) allows Selenium to directly navigate the page.
+[Selenium](https://www.selenium.dev) now lets us open the page and perform user actions for us. This also requires a browser that allows for it to be controlled by some external software - here we will use Chrome and install the necessary [ChromeDriver](https://chromedriver.chromium.org) package.
 
 ```
 pip install selenium
 pip install chromedriver-py
 ```
+
+Opening an html file requires the absolute path to the file, for which the `file_uri()` function has been introduced.
 
 ```py
 import os
@@ -658,9 +707,7 @@ def file_uri(filename):
 driver = webdriver.Chrome()
 ```
 
-Opens up the chrome browser.
-
-To load an html file, we need to provide its exact uri (no relative paths). Then, we can look for information.
+`webdriver.Chrome()` opens the web browser. From here, we can use `driver.get()` to open up a webpage and start messing around with its content.
 
 ```py
 driver.get(file_uri('counter.html'))
@@ -681,7 +728,7 @@ for i in range(100):
     increment.click()
 ```
 
-Example for a username-password field.
+If there are some text fields, we can use `.send_keys()` to simulate keyboard input.
 
 ```py
 username_field = driver.find_element_by_name("username")
@@ -693,7 +740,8 @@ password_field.send_keys("my_password")
 submit_button.click()
 ```
 
-Waiting for elements to load.
+In some cases we may need to wait for certain elements to load, i.e., in react until all the components are ready to be used.
+Here, `WebDriverWait(..., 10).until(...)` signifies that Selenium should wait for a certain element to be loaded. If it doesn't appear after 10 seconds, it quits.
 
 ```py
 from selenium.webdriver.support.ui import WebDriverWait
@@ -706,9 +754,9 @@ element = WebDriverWait(driver, 10).until(
 )
 ```
 
-We could package it in a `unittest.TestCase` class and use, i.e., `.text` on an element to check if the counter counted correctly.
-
 ### Selenium in Django
+
+Finally, here is a quick demonstration how Selenium could be used to test the functionality inside our movies project.
 
 ```py
 from django.test import LiveServerTestCase
@@ -745,13 +793,13 @@ class MovieSearchTest(LiveServerTestCase):
 
 # CI/CD
 
-Continuous Integration, Continuous Delivery, a set of best-practices for projects that involves teams of developers.
+Continuous Integration and Continuous Delivery describes a set of best-practices that a group of developers should follow when working as a team on a project.
 
 CI is a software development practice where developers regularly merge their code changes into a central repository, typically multiple times a day. Once the code is merged, automated builds and tests are done to ensure some level of code quality. It should (hopefully) catch bugs as early as possible.
 
-In the next stage, CD is an approach in which release cycles of a software are rather short. This ensures that any version of the software can be released reliably at any time. Also utilizes a lot of automation.
+In the next stage, CD is an approach in which release cycles of a software are rather short. This ensures that any version of the software can be released reliably at any time. In the past, software companies typically released major version upgrades with a bunch of new features. This is slowly falling out of favor.
 
-The key benefits are:
+Here are some of the key benefits of using CI/CD:
 
 * reducing compatibility issues when teams are working together,
 * quickly isolate and find problems through automated testing with every merge,
@@ -762,16 +810,16 @@ The key benefits are:
 ## GitHub Actions
 
 [GitHub Actions](https://github.com/features/actions) is a popular tool used for CI.
-These actions are event-driven, they happen when some event occurs (i.e., a pushed commit, a merge to the main branch, pull requests, comments, scheduled actions, etc.)
+These actions are event-driven, they happen when some event occurs (i.e., a pushed commit, a merge to the main branch, pull requests, new comments, scheduled actions, etc.).
 
 Some popular tasks or actions include:
 
-* automated testing
-* CI/CD, run tests and deploy the app in a testing environment
-* code linting, notify the user on a pull request when their code is malformatted
-* issue management, if a user opens a new issue, the action could automatically assign tags based on its content
-* package publication
-* scheduled jobs, close issues where nothing happend over the last two months
+* automated testing,
+* CI/CD, run tests and deploy the app in a testing environment,
+* code linting, notify the user on a pull request when their code is malformatted,
+* issue management, if a user opens a new issue, the action could automatically assign tags based on its content,
+* package publication when something is merged to the main branch,
+* scheduled jobs, close issues where nothing happend over the last two months.
 
 Each action is based on a [_workflow_](https://docs.github.com/en/actions/using-workflows). Each workflow is described in a [yaml](https://en.wikipedia.org/wiki/YAML) file in the `.github/workflows/` directory. A simple action might be this.
 
@@ -826,19 +874,26 @@ In yaml, dashes (`-`) denote a list of items. If a line does not start with a da
 
 </details>
 
+For many of the popular programming languages and software libraries, there is a good chance that you will find a template yaml file that can be used to run those tests.
+
 ## Docker
 
-List of [docker base images](https://hub.docker.com/search?q=&type=image&image_filter=official).
+Working on different machines with different people can be at times difficult. The operating systems may vary, what tools have been installed may be different, and things like environment variables and system settings can influence how or even if a program runs.
+
+Docker mitigates this by abstracting the operating system and instead offering a consistent workflow that describes, (a), what needs to be installed for a prorgam to run, and (b), how that program can be executed.
+
+At the root level of our Django project, we may create a Dockerfile (called `Dockerfile`) with the following contents.
 
 ```Dockerfile
 FROM python:3
 COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
+EXPOSE 80
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
 ```
 
-<details><summary></summary>
+<details><summary>Expand to read each line in detail</summary>
 
 ```Dockerfile
 # Set the base image for your Docker container. Here, we're using the official Python 3 Docker image.
@@ -866,20 +921,52 @@ CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
 
 </details>
 
+Here, we use `python:3` as our base image. For a list of all the other docker images that are available, [click here](https://hub.docker.com/search?q=&type=image&image_filter=official).
+
+In the command line, we then can:
+
+1. build the container (which runs the Dockerfile line by line, installing all the required software on the way),
+2. run the container.
+
+Once the container is run, it should be available over port 80 (depending on the port specified in the Dockerfile after `EXPOSE`).
+
 ```sh
-docker build -t my_script . # -t: give image a name (here "my_script")
+# build docker image, give it a name
+docker build -t my_script .
+
+# run docker image
 docker run my_script
-docker run -d --name my_container my_script # -d: start in the background
-docker run -d --restart on-failure my_script
-docker logs -f my_script
-docker start <container>
+# hit ctrl+c to stop the process
+
+# run docker image in the background (-d <=> daemon process)
+# it returns the id of the container
+docker run -d my_script
+# stop corresponding container (given the id)
 docker stop <container>
+
+# run docker image in the background, restart if it stops unexpectedly
+docker run -d --restart on-failure my_script
+
+# docker runs in the background, view its logs
+docker logs -f my_script
+
+# list actively running images
 docker ps
+
+# list all images
 docker ps -a
+
+# run command line inside the container
 docker exec -i <container> /bin/bash
 docker exec -i <container> bash -l
+
+# list images
 docker images
+
+# remove container
 docker rm
+
+# remove image
 docker rmi
 ```
 
